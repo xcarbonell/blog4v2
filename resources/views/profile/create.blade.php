@@ -36,7 +36,7 @@
 
                             <div class="mb-3">
                                 <button type="submit" class="btn btn-primary">Save</button>
-                                <a href="{{ route('user.showAll') }}" class="btn btn-secondary">Cancel</a>
+                                <a href="{{ route('user') }}" class="btn btn-secondary">Cancel</a>
                             </div>
 
                         </form>

@@ -13,15 +13,18 @@
                         {{ $post->content }}
                     </div>
 
-                    <div class="card-body">
-                        <form action="{{ route('posts.destroy', $post->id) }}" method="DELETE">
-                            <a class="btn btn-info" href="{{ route('posts.edit', [$post->user_id, $post->id]) }}">Edit
-                                Post</a>
-                            @csrf
-                            @method('DELETE')
-                            <button class="btn btn-danger" type="submit">Delete Post</button>
-                        </form>
-                    </div>
+                    @if (Auth::user()->id == $post->user_id)
+                        <div class="card-body">
+                            <form action="{{ route('posts.destroy', $post->id) }}" method="DELETE">
+                                <a class="btn btn-info"
+                                    href="{{ route('posts.edit', [$post->user_id, $post->id]) }}">Edit
+                                    Post</a>
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-danger" type="submit">Delete Post</button>
+                            </form>
+                        </div>
+                    @endif
                 </div>
                 <br>
                 <div class="card">

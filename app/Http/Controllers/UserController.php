@@ -9,6 +9,16 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
+    
+    public function __construct()
+    {
+        /* si s'utilitza la autoritzacio des del constructor les policies no
+        em funcionen correctament, en canvi si vaig autoritzant una a una
+        amb $this->authorize('action', $model) si que funcionen correctament;*/
+        
+        //$this->authorizeResource(User::class, 'user');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -17,6 +27,11 @@ class UserController extends Controller
     public function index()
     {
         //
+        $this->authorize('viewAny', Auth::user());
+
+        $users = User::all();
+
+        return view('profile.index', ['users' => $users]);
     }
 
     /**
@@ -27,6 +42,8 @@ class UserController extends Controller
     public function create()
     {
         //
+        $this->authorize('create');
+
         return view('profile.create');
     }
 
@@ -39,7 +56,6 @@ class UserController extends Controller
     public function store(Request $request)
     {
         //
-        //$user = Auth::user();
 
         $user = new User();
 
@@ -48,12 +64,9 @@ class UserController extends Controller
         $user->password = Hash::make($request->get('password'));
         $user->role_id = $request->get('role');
 
-        //dd($user);
-
         $user->save();
 
-        //redireccio al metode index perque ens torni a mostrar tots els nostres posts
-        return redirect('user/showAll');
+        return redirect('user');
     }
 
     /**
@@ -65,19 +78,6 @@ class UserController extends Controller
     public function show($id)
     {
         //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showAll()
-    {
-        //
-        $users = User::all();
-
-        return view('profile.selectUser', ['users' => $users]);
     }
 
     /**
@@ -95,6 +95,8 @@ class UserController extends Controller
         */
         $user = User::find($id);
 
+        $this->authorize('update', $user);
+
         return view('profile.edit', ['user' => $user]);
     }
 
@@ -109,6 +111,8 @@ class UserController extends Controller
     {
         //
         $user = User::find($id);
+
+        $this->authorize('update', Auth::user(), $user);
 
         $user->username = $request->get('username');
         $user->email = $request->get('email');
@@ -129,6 +133,8 @@ class UserController extends Controller
     {
         //
         $user = User::find($id);
+
+        $this->authorize('delete', $user);
 
         $user->delete();
 

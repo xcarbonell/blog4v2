@@ -19,6 +19,6 @@ class AdminMiddleware
         if(Auth::user()->role_id == 1){
             return $next($request);
         }
-        return redirect('home');
+        return view('unauthorized');
     }
 }

@@ -1,11 +1,12 @@
 <?php
 
 use App\Http\Controllers\HomeController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AboutController;
+use App\Http\Controllers\PostController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Post;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -21,7 +22,6 @@ use App\Post;
 /*Route::get('/', function () {
     return view('welcome');
 });*/
-
 
 //Route::get('/', [IndexController::class, 'index'])->name('index');
 
@@ -40,27 +40,24 @@ Route::get('user/{id}/edit', 'UserController@edit')->name('user.edit');
 Route::put('user/{id}/update', 'UserController@update')->name('user.update');
 
 //veure tots els usuaris per l'admin
-Route::get('user/showAll', 'UserController@showAll')->name('user.showAll')->middleware('admin');
+Route::get('user', 'UserController@index')->name('user');
 
 //seleccionar l'usuari a esborrar per l'admin
-Route::get('user/{id}/destroy', 'UserController@destroy')->name('user.destroy')->middleware('admin');
+Route::get('user/{id}/destroy', 'UserController@destroy')->name('user.destroy');
 
 //vista per crear un usuari per l'admin
-Route::get('user/create', 'UserController@create')->name('user.create')->middleware('admin');
+Route::get('user/create', 'UserController@create')->name('user.create');
 
 //crear un usuari per l'admin
-Route::post('user/store', 'UserController@store')->name('user.store')->middleware('admin');
+Route::post('user/store', 'UserController@store')->name('user.store');
 
 //  ******  RUTES DELS POSTS    ******
 
-//veure els seus posts
+//veure els posts
 Route::get('posts', 'PostController@index')->name('posts');
 
 //veure un post en particular amb els comentaris
 Route::get('posts/{id}/show', 'PostController@show')->name('posts.show');
-
-//veure tots els posts
-Route::get('posts/showAll', 'PostController@showAll')->name('posts.showAll');
 
 //vista per editar un post
 Route::get('posts/{id}/edit', 'PostController@edit')->name('posts.edit');
@@ -92,7 +89,6 @@ Route::put('post/{id}', function ($id) {
 })->middleware('auth', 'role:admin');
 
 */
-
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/', function () {
         return "admin";
@@ -102,3 +98,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+Route::get('unauthorized', function () {
+    return view('unauthorized');
+});

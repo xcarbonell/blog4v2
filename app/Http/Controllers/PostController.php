@@ -9,6 +9,15 @@ use App\Comment;
 
 class PostController extends Controller
 {
+    public function __construct()
+    {
+        /* si s'utilitza la autoritzacio des del constructor les policies no
+        em funcionen correctament, en canvi si vaig autoritzant una a una
+        amb $this->authorize('action', $model) si que funcionen correctament;*/
+        
+        //$this->authorizeResource(Post::class, 'post');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -17,15 +26,9 @@ class PostController extends Controller
     public function index()
     {
         //
-        $user = Auth::user();
+        $posts = Post::all();
 
-        if ($user = Auth::user()) {
-            $posts = Post::where('user_id', $user->id)->get();
-        } else {
-            $posts = Post::all();
-        }
         return view('posts.index', ['posts' => $posts]);
-    
     }
 
     /**
@@ -36,6 +39,8 @@ class PostController extends Controller
     public function create()
     {
         //
+        $this->authorize('create');
+
         return view('posts.create');
     }
 
@@ -72,23 +77,12 @@ class PostController extends Controller
     {
         //
         $post = Post::find($id);
-        $comments = Comment::where('post_id', $id)->get();
+
+        $this->authorize('view', $post);
+
+        $comments = Comment::where('post_id', $post->id)->get();
 
         return view('posts.show', ['post' => $post, 'comments' => $comments]);
-    }
-
-
-    /**
-     * Display the specified resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function showAll()
-    {
-        //
-        $posts = Post::all();
-
-        return view('posts.index', ['posts' => $posts, 'seeAll' => true]);
     }
 
     /**
@@ -101,6 +95,9 @@ class PostController extends Controller
     {
         //
         $post = Post::find($id);
+
+        $this->authorize('update', $post);
+
         return view('posts.edit', ['post' => $post]);
     }
 
@@ -135,6 +132,8 @@ class PostController extends Controller
     {
         //
         $post = Post::find($id);
+
+        $this->authorize('delete', $post);
 
         $post->delete();
 

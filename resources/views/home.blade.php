@@ -18,20 +18,16 @@
                     </div>
 
                     <div class="card-body">
-                        <a href="{{ route('posts') }}">See my posts</a>
-                    </div>
-
-                    <div class="card-body">
-                        <a href="{{ route('posts.showAll') }}">See all posts</a>
+                        <a href="{{ route('posts') }}">See posts</a>
                     </div>
 
                     <div class="card-body">
                         <a href="{{ route('user.edit', Auth::user()->id) }}">Manage profile</a>
                     </div>
-
+                    
                     @if (Auth::user()->role_id == 1)
                         <div class="card-body">
-                            <a href="{{ route('user.showAll') }}">Manage users</a>
+                            <a href="{{ route('user') }}">Manage users</a>
                         </div>
                     @endif
 
