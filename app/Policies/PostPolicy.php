@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Post;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Auth;
 
 class PostPolicy
 {
@@ -32,10 +33,7 @@ class PostPolicy
     public function view(User $user, Post $post)
     {
         //
-        if ($user->id == $post->user_id || $user->role_id == 1) {
-            return true;
-        }
-        return false;
+        return true;
     }
 
     /**

@@ -23,7 +23,7 @@
 
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
-                                <input id="password" name="password" type="text" class="form-control">
+                                <input id="password" name="password" type="password" class="form-control">
                             </div>
 
                             <div class="mb-3">

@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/b01f5c36-ccd1-4d14-9740-31e6eb5de45f/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/carbonell-blog",
+    "appService.deploySubpath": "."
+}

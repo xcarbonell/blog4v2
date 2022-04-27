@@ -2,10 +2,12 @@
 
 namespace App\Policies;
 
+use App\Comment;
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Auth;
 
-class UserPolicy
+class CommentPolicy
 {
     use HandlesAuthorization;
 
@@ -18,26 +20,20 @@ class UserPolicy
     public function viewAny(User $user)
     {
         //
-        if ($user->role_id == 1) {
-            return true;
-        }
-        return false;
+        return true;
     }
 
     /**
      * Determine whether the user can view the model.
      *
      * @param  \App\User  $user
-     * @param  \App\User  $model
+     * @param  \App\Comment  $comment
      * @return mixed
      */
-    public function view(User $user, User $model)
+    public function view(User $user, Comment $comment)
     {
         //
-        if ($user->role_id == 1) {
-            return true;
-        }
-        return false;
+        return true;
     }
 
     /**
@@ -49,7 +45,16 @@ class UserPolicy
     public function create(User $user)
     {
         //
-        if ($user->role_id == 1) {
+        if (Auth::user()) {
+            return true;
+        }
+        return false;
+    }
+
+    public function store(User $user)
+    {
+        dd($user);
+        if ($user->id > 0) {
             return true;
         }
         return false;
@@ -59,29 +64,27 @@ class UserPolicy
      * Determine whether the user can update the model.
      *
      * @param  \App\User  $user
-     * @param  \App\User  $model
+     * @param  \App\Comment  $comment
      * @return mixed
      */
-    public function update(User $user, User $model)
+    public function update(User $user, Comment $comment)
     {
         //
-        if ($user->id == $model->id || ($user->role_id == 1 && $model->role_id != 1)) {
-            return true;
-        }
-        return false;
+        return true;
     }
 
     /**
      * Determine whether the user can delete the model.
      *
      * @param  \App\User  $user
-     * @param  \App\User  $model
+     * @param  \App\Comment  $comment
      * @return mixed
      */
-    public function delete(User $user, User $model)
+    public function delete(User $user, Comment $comment)
     {
         //
-        if ($user->role_id == 1 && $model->role_id != 1) {
+        dd($comment);
+        if ($user->id == $comment->user_id || $user->role_id == 1) {
             return true;
         }
         return false;
@@ -91,10 +94,10 @@ class UserPolicy
      * Determine whether the user can restore the model.
      *
      * @param  \App\User  $user
-     * @param  \App\User  $model
+     * @param  \App\Comment  $comment
      * @return mixed
      */
-    public function restore(User $user, User $model)
+    public function restore(User $user, Comment $comment)
     {
         //
     }
@@ -103,13 +106,13 @@ class UserPolicy
      * Determine whether the user can permanently delete the model.
      *
      * @param  \App\User  $user
-     * @param  \App\User  $model
+     * @param  \App\Comment  $comment
      * @return mixed
      */
-    public function forceDelete(User $user, User $model)
+    public function forceDelete(User $user, Comment $comment)
     {
         //
-        if ($user->role_id == 1) {
+        if ($user->id == $comment->user_id || $user->role_id == 1) {
             return true;
         }
         return false;

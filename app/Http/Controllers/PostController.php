@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Post;
 use App\Comment;
+use App\Tag;
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
@@ -13,8 +15,8 @@ class PostController extends Controller
     {
         /* si s'utilitza la autoritzacio des del constructor les policies no
         em funcionen correctament, en canvi si vaig autoritzant una a una
-        amb $this->authorize('action', $model) si que funcionen correctament;*/
-        
+        amb $this->authorize('action', $model) si que funcionen;*/
+
         //$this->authorizeResource(Post::class, 'post');
     }
 
@@ -28,7 +30,15 @@ class PostController extends Controller
         //
         $posts = Post::all();
 
-        return view('posts.index', ['posts' => $posts]);
+        $post_tag = [];
+        $i = 0;
+
+        foreach ($posts as $post) {
+            $post_tag[$i] = $post->tags()->get();
+            $i++;
+        }
+
+        return view('posts.index', ['posts' => $posts, 'post_tag' => $post_tag]);
     }
 
     /**
@@ -39,7 +49,7 @@ class PostController extends Controller
     public function create()
     {
         //
-        $this->authorize('create');
+        $this->authorize('create', Post::class);
 
         return view('posts.create');
     }
@@ -55,11 +65,26 @@ class PostController extends Controller
         //
         $user = Auth::user();
 
-        $post = new Post();
+        $validated = $request->validate([
+            'title' => 'required|max:191',
+            'content' => 'required|max:191',
+            'tags' => 'required'
+        ]);
 
-        $post->title = $request->get('title');
-        $post->content = $request->get('content');
-        $post->user_id = $user->id;
+        $post = Post::create([
+            'title' => $validated['title'],
+            'content' => $validated['content'],
+            'user_id' => $user->id,
+            'created_at' => now(),
+            'updated_at' => now()
+        ]);
+
+        $tags = explode(',', trim($request->get('tags')));
+
+        foreach ($tags as $tag) {
+            $t = Tag::create(['text' => $tag]);
+            $post->tags()->attach($t);
+        }
 
         $post->save();
 
@@ -78,11 +103,13 @@ class PostController extends Controller
         //
         $post = Post::find($id);
 
-        $this->authorize('view', $post);
+        //$this->authorize('view', $post);
 
         $comments = Comment::where('post_id', $post->id)->get();
 
-        return view('posts.show', ['post' => $post, 'comments' => $comments]);
+        $tags = $post->tags()->get();
+
+        return view('posts.show', ['post' => $post, 'comments' => $comments, 'tags' => $tags]);
     }
 
     /**
@@ -113,6 +140,8 @@ class PostController extends Controller
         //
         $post = Post::find($id);
 
+        $this->authorize('update', $post);
+
         $post->title = $request->get('title');
         $post->content = $request->get('content');
         $post->updated_at = now();
@@ -134,6 +163,10 @@ class PostController extends Controller
         $post = Post::find($id);
 
         $this->authorize('delete', $post);
+
+        DB::table('post_tag')->where('post_id', '=', $id)->delete();
+
+        Comment::where('post_id', $id)->delete();
 
         $post->delete();
 

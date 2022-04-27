@@ -18,7 +18,12 @@
 
                             <label for="content" class="form-label">Content</label>
                             <div class="mb-3">
-                                <textarea name="content" id="content" cols="30" rows="10"></textarea>
+                                <textarea name="content" id="content" class="form-control" cols="10" rows="5"></textarea>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="tags" class="form-label">Tags</label>
+                                <input id="tags" name="tags" type="text" class="form-control" placeholder="Split tags by commas">
                             </div>
 
                             <div class="mb-3">

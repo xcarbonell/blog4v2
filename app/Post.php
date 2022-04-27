@@ -10,7 +10,7 @@ class Post extends Model
 {
     use Notifiable;
 
-    protected $fillable = ['title', 'contents', 'user_id', 'category_id'];
+    protected $fillable = ['title', 'content', 'user_id'];
 
     public function user()
     {
@@ -20,5 +20,10 @@ class Post extends Model
     public function comments()
     {
         return $this->hasMany(Comment::class);
+    }
+
+    public function tags()
+    {
+        return $this->belongsToMany(Tag::class);
     }
 }

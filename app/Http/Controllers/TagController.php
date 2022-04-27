@@ -2,21 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Comment;
-use App\Post;
+use App\Tag;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\User;
 
-class CommentController extends Controller
+class TagController extends Controller
 {
-
-
-    public function __construct()
-    {
-        $this->authorizeResource(Comment::class, 'comment');
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -35,9 +25,6 @@ class CommentController extends Controller
     public function create()
     {
         //
-        /*$this->authorize('create', Auth::user());
-
-        return redirect('posts');*/
     }
 
     /**
@@ -46,25 +33,9 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $id)
+    public function store(Request $request)
     {
         //
-        //$post = Post::find($id);
-        //$user = User::find($post->user_id);
-
-        //dd(Auth::user());
-
-        //$this->authorize('store', Auth::user());
-
-        $comment = new Comment();
-
-        $comment->comment = $request->get('comment');
-        $comment->user_id = Auth::user()->id;
-        $comment->post_id = $id;
-
-        $comment->save();
-
-        return back();
     }
 
     /**
@@ -110,12 +81,5 @@ class CommentController extends Controller
     public function destroy($id)
     {
         //
-        $comment = Comment::find($id);
-        dd($comment);
-        //$this->authorize('delete', $comment);
-
-        $comment->delete();
-
-        return back();
     }
 }

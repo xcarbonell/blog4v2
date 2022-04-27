@@ -74,6 +74,13 @@ Route::post('posts/store', 'PostController@store')->name('posts.store');
 //esborrar un post
 Route::get('posts/{id}/destroy', 'PostController@destroy')->name('posts.destroy');
 
+//  ******  RUTES DELS POSTS    ******
+
+//crear un comentari
+Route::post('comments/{id}/store', 'CommentController@store')->name('comments.store');
+
+//esborrar un comentari
+Route::get('comments/{id}/destroy', 'CommentController@destroy')->name('comments.destroy');
 /*
 Route::get('posts/{post?}', function ($id = null) {
     if ($id == null) {
@@ -89,12 +96,13 @@ Route::put('post/{id}', function ($id) {
 })->middleware('auth', 'role:admin');
 
 */
+/*
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->group(function () {
     Route::get('/', function () {
         return "admin";
     })->name('admin.index');
 });
-
+*/
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
